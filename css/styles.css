@@ -1,0 +1,18 @@
+﻿/* TECHFEST 2026 — QUANTUM NEXUS | Stylesheet v0.1 */
+:root {
+  --bg-primary: #050510;
+  --bg-secondary: #0a0a1f;
+  --cyan: #00f5ff;
+  --cyan-dim: rgba(0, 245, 255, 0.3);
+  --magenta: #ff00ff;
+  --magenta-dim: rgba(255, 0, 255, 0.3);
+  --gold: #ffd700;
+  --purple: #8b5cf6;
+  --white: #ffffff;
+  --white-dim: rgba(255, 255, 255, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+  --font-display: 'Orbitron', monospace;
+  --font-body: 'Rajdhani', sans-serif;
+}
