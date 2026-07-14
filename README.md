@@ -12,7 +12,7 @@
 
 *An immersive 3D scroll-driven experience for Asia's largest science & technology festival*
 
-[🌐 Live Demo](https://prateek05-coder.github.io/quantum-nexus-techfest-2026) · [🎓 IIT Bombay](https://www.iitbombay.org) · [🎪 Techfest](https://www.techfest.org)
+[🎓 IIT Bombay](https://www.iitbombay.org) · [🎪 Techfest](https://www.techfest.org)
 
 </div>
 
