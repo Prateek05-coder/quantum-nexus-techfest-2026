@@ -4,17 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TECHFEST 2026 | Quantum Nexus — IIT Bombay</title>
-  <meta name="description" content="TECHFEST 2026 — Quantum Nexus: Where Dimensions Converge." />
+  <meta name="description" content="TECHFEST 2026 — Quantum Nexus: Where Dimensions Converge. Asia largest science and technology festival hosted by IIT Bombay. December 19-21, 2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
-  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.164.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.164.0/examples/jsm/"}}</script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
+    }
+  }
+  </script>
   <script type="module" src="js/app.js"></script>
 </head>
 <body>
-  <div id="loading-screen"><div class="loading-content"><p>Loading...</p></div></div>
+  <div id="loading-screen"><div class="loading-content"><div class="loading-logo"><span class="logo-text">TECHFEST</span><span class="logo-year">2026</span></div><div class="loading-bar-container"><div id="loading-bar"></div></div><p id="loading-text">INITIALIZING QUANTUM NEXUS...</p></div></div>
+  <div id="canvas-container"></div>
+  <div id="custom-cursor"><div class="cursor-dot"></div><div class="cursor-ring"></div></div>
+  <nav id="nav-dots">
+    <button class="nav-dot active" data-index="0" aria-label="Hero"><span class="nav-label">Gateway</span></button>
+    <button class="nav-dot" data-index="1" aria-label="Wormhole"><span class="nav-label">Wormhole</span></button>
+    <button class="nav-dot" data-index="2" aria-label="Nexus"><span class="nav-label">Nexus</span></button>
+    <button class="nav-dot" data-index="3" aria-label="Events"><span class="nav-label">Events</span></button>
+    <button class="nav-dot" data-index="4" aria-label="Journey"><span class="nav-label">Journey</span></button>
+    <button class="nav-dot" data-index="5" aria-label="Register"><span class="nav-label">Register</span></button>
+  </nav>
 </body>
 </html>
