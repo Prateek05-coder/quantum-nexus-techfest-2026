@@ -43,3 +43,12 @@ button { background: none; border: none; color: inherit; font-family: inherit; c
 .section-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; pointer-events: none; }
 .section-overlay a,.section-overlay button,.section-overlay .event-card,.section-overlay .register-btn,.section-overlay .social-link,.section-overlay .portal-content { pointer-events: auto; }
 .title-accent { background: linear-gradient(135deg, var(--cyan), var(--magenta)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+
+.hero-content { text-align: center; max-width: 800px; position: relative; }
+.hero-pre-title { font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; letter-spacing: 8px; color: var(--cyan); text-transform: uppercase; margin-bottom: 1rem; }
+.hero-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(3rem,10vw,8rem); letter-spacing: 0.5rem; text-transform: uppercase; line-height: 1; color: var(--white); }
+.hero-year { font-family: var(--font-display); font-size: clamp(1.5rem,5vw,3rem); font-weight: 700; color: var(--gold); letter-spacing: 1rem; margin-top: 0.5rem; }
+.hero-subtitle { font-family: var(--font-display); font-size: clamp(1rem,3vw,1.8rem); font-weight: 400; letter-spacing: 0.8rem; color: var(--white); margin-top: 1.5rem; }
+.hero-tagline { font-family: var(--font-body); font-size: 1.1rem; color: var(--white-dim); letter-spacing: 4px; margin-top: 0.5rem; }
+.hero-date { margin-top: 2rem; display: inline-block; }
+.hero-date span { font-family: var(--font-body); font-weight: 600; color: var(--cyan); letter-spacing: 3px; font-size: 0.9rem; border: 1px solid var(--cyan-dim); padding: 0.5rem 1.5rem; border-radius: 30px; display: inline-block; }
