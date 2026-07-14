@@ -64,3 +64,15 @@ button { background: none; border: none; color: inherit; font-family: inherit; c
 .glitch-text::after { color: var(--magenta); clip-path: inset(60% 0 0 0); animation: glitch-2 2.5s cubic-bezier(0.25,0.46,0.45,0.94) infinite; }
 @keyframes glitch-1 { 0%,100%{clip-path:inset(0 0 65% 0);transform:translate(0)} 20%{clip-path:inset(10% 0 55% 0);transform:translate(-3px,2px)} 40%{clip-path:inset(30% 0 35% 0);transform:translate(3px,-1px)} 60%{clip-path:inset(5% 0 60% 0);transform:translate(-2px,1px)} 80%{clip-path:inset(45% 0 15% 0);transform:translate(2px,-2px)} }
 @keyframes glitch-2 { 0%,100%{clip-path:inset(60% 0 0 0);transform:translate(0)} 20%{clip-path:inset(50% 0 10% 0);transform:translate(3px,-2px)} 40%{clip-path:inset(70% 0 5% 0);transform:translate(-3px,1px)} 60%{clip-path:inset(55% 0 15% 0);transform:translate(2px,-1px)} 80%{clip-path:inset(65% 0 0 0);transform:translate(-2px,2px)} }
+
+.events-overlay { align-items: center; max-width: 1100px; margin: 0 auto; width: 100%; }
+.events-title { font-family: var(--font-display); text-align: center; font-size: clamp(1.5rem,4vw,2.5rem); font-weight: 700; margin-bottom: 3rem; color: var(--white); }
+.events-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 1.5rem; width: 100%; pointer-events: auto; }
+.event-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 2rem; text-align: center; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease; cursor: pointer; position: relative; overflow: hidden; }
+.event-card::before { content: ''; position: absolute; inset: -1px; border-radius: 16px; padding: 1px; background: linear-gradient(135deg,var(--cyan-dim),transparent 50%,var(--magenta-dim)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.4s ease; }
+.event-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 10px 40px rgba(0,245,255,0.1), 0 0 60px var(--glass-shadow); }
+.event-card:hover::before { opacity: 1; }
+.event-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+.event-card h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 0.75rem; }
+.event-card p { font-family: var(--font-body); font-size: 0.9rem; color: var(--white-dim); line-height: 1.5; margin-bottom: 1rem; }
+.event-count { font-family: var(--font-display); font-size: 0.75rem; color: var(--cyan); letter-spacing: 2px; background: rgba(0,245,255,0.1); padding: 0.3rem 0.8rem; border-radius: 20px; display: inline-block; }
