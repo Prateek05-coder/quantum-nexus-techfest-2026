@@ -43,3 +43,44 @@ class MouseTracker {
     }
   }
 }
+
+class GalaxyParticles {
+  constructor(scene){
+    this.scene=scene; this.mesh=null;
+    this._build();
+  }
+  _build(){
+    const count=CONFIG.particles.galaxy;
+    const pos=new Float32Array(count*3);
+    const col=new Float32Array(count*3);
+    const sz=new Float32Array(count);
+    const arms=5; const spread=0.4; const radius=40;
+    const c1=new THREE.Color(CONFIG.colors.cyan);
+    const c2=new THREE.Color(CONFIG.colors.magenta);
+    for(let i=0;i<count;i++){
+      const arm=i%arms; const t=Math.random();
+      const r=Math.pow(Math.random(),0.5)*radius;
+      const angle=(arm/arms)*Math.PI*2+r*0.3+Math.random()*spread;
+      pos[i*3]=Math.cos(angle)*r+(Math.random()-0.5)*spread*r;
+      pos[i*3+1]=(Math.random()-0.5)*r*0.1;
+      pos[i*3+2]=Math.sin(angle)*r+(Math.random()-0.5)*spread*r;
+      const c=c1.clone().lerp(c2,r/radius);
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+      sz[i]=Math.random()*2+0.5;
+    }
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+    geo.setAttribute('aSize',new THREE.BufferAttribute(sz,1));
+    // Shader material added next commit
+    const mat=new THREE.PointsMaterial({size:0.15,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false});
+    this.mesh=new THREE.Points(geo,mat);
+    this.scene.add(this.mesh);
+  }
+  update(time,progress){
+    if(this.mesh){
+      this.mesh.rotation.y=time*0.02;
+      this.mesh.material.opacity=1-smoothstep(0.1,0.2,progress);
+    }
+  }
+}
