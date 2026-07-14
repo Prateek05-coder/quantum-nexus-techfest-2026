@@ -76,3 +76,17 @@ button { background: none; border: none; color: inherit; font-family: inherit; c
 .event-card h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 0.75rem; }
 .event-card p { font-family: var(--font-body); font-size: 0.9rem; color: var(--white-dim); line-height: 1.5; margin-bottom: 1rem; }
 .event-count { font-family: var(--font-display); font-size: 0.75rem; color: var(--cyan); letter-spacing: 2px; background: rgba(0,245,255,0.1); padding: 0.3rem 0.8rem; border-radius: 20px; display: inline-block; }
+.timeline-title { text-align: center; font-family: var(--font-display); font-size: clamp(1.5rem,4vw,2.5rem); font-weight: 700; margin-bottom: 3rem; }
+.timeline-container { position: relative; max-width: 700px; width: 100%; padding: 1rem 0; }
+.timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom,transparent,var(--cyan),var(--magenta),transparent); transform: translateX(-50%); }
+.timeline-item { display: flex; align-items: center; margin-bottom: 3rem; position: relative; opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.timeline-item.visible { opacity: 1; transform: translateY(0); }
+.timeline-item:nth-child(odd) { flex-direction: row; }
+.timeline-item:nth-child(even) { flex-direction: row-reverse; }
+.timeline-item:nth-child(odd) .timeline-content { text-align: right; padding-right: 2rem; }
+.timeline-item:nth-child(even) .timeline-content { text-align: left; padding-left: 2rem; }
+.timeline-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--cyan); border: 3px solid var(--bg-primary); box-shadow: 0 0 15px var(--cyan), 0 0 30px var(--cyan-dim); position: absolute; left: 50%; transform: translateX(-50%); z-index: 2; }
+.timeline-content { width: calc(50% - 30px); background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 12px; padding: 1.25rem; }
+.timeline-content:hover { border-color: var(--cyan-dim); box-shadow: 0 0 20px var(--cyan-dim); }
+.timeline-content h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--cyan); margin-bottom: 0.5rem; }
+.timeline-content p { font-family: var(--font-body); font-size: 0.9rem; color: var(--white-dim); line-height: 1.5; }
