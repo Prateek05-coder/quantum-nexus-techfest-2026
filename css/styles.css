@@ -58,3 +58,9 @@ button { background: none; border: none; color: inherit; font-family: inherit; c
 .section-text { text-align: center; max-width: 600px; }
 .section-text h2 { font-family: var(--font-display); font-size: clamp(1.5rem,4vw,3rem); font-weight: 700; margin-bottom: 1rem; color: var(--white); }
 .section-text p { font-family: var(--font-body); font-size: 1.1rem; color: var(--white-dim); line-height: 1.6; letter-spacing: 1px; }
+.glitch-text { position: relative; display: inline-block; }
+.glitch-text::before,.glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; font-family: inherit; font-size: inherit; font-weight: inherit; letter-spacing: inherit; }
+.glitch-text::before { color: var(--cyan); clip-path: inset(0 0 65% 0); animation: glitch-1 2.5s cubic-bezier(0.25,0.46,0.45,0.94) infinite; }
+.glitch-text::after { color: var(--magenta); clip-path: inset(60% 0 0 0); animation: glitch-2 2.5s cubic-bezier(0.25,0.46,0.45,0.94) infinite; }
+@keyframes glitch-1 { 0%,100%{clip-path:inset(0 0 65% 0);transform:translate(0)} 20%{clip-path:inset(10% 0 55% 0);transform:translate(-3px,2px)} 40%{clip-path:inset(30% 0 35% 0);transform:translate(3px,-1px)} 60%{clip-path:inset(5% 0 60% 0);transform:translate(-2px,1px)} 80%{clip-path:inset(45% 0 15% 0);transform:translate(2px,-2px)} }
+@keyframes glitch-2 { 0%,100%{clip-path:inset(60% 0 0 0);transform:translate(0)} 20%{clip-path:inset(50% 0 10% 0);transform:translate(3px,-2px)} 40%{clip-path:inset(70% 0 5% 0);transform:translate(-3px,1px)} 60%{clip-path:inset(55% 0 15% 0);transform:translate(2px,-1px)} 80%{clip-path:inset(65% 0 0 0);transform:translate(-2px,2px)} }
