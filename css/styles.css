@@ -118,3 +118,20 @@ button { background: none; border: none; color: inherit; font-family: inherit; c
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 .visible { opacity: 1 !important; transform: translateY(0) !important; }
 .hidden { opacity: 0; transform: translateY(30px); }
+@media (max-width:768px) {
+  body { cursor: auto; }
+  #custom-cursor { display: none; }
+  .logo-text { font-size: 2rem; letter-spacing: 0.5rem; }
+  .hero-pre-title { font-size: 0.75rem; letter-spacing: 4px; }
+  .hero-subtitle { letter-spacing: 0.4rem; }
+  .section-overlay { padding: 1.5rem; }
+  .timeline-line { left: 20px; }
+  .timeline-item,.timeline-item:nth-child(odd),.timeline-item:nth-child(even) { flex-direction: column; align-items: flex-start; padding-left: 50px; }
+  .timeline-dot { left: 20px; }
+  .timeline-content,.timeline-item:nth-child(odd) .timeline-content,.timeline-item:nth-child(even) .timeline-content { width: 100%; text-align: left; padding-left: 0; padding-right: 0; }
+  .events-grid { grid-template-columns: 1fr; gap: 1rem; }
+  #nav-dots { right: 1rem; gap: 1rem; }
+  .nav-label { display: none; }
+  .portal-stats { gap: 2rem; }
+  .stat-number { font-size: 1.5rem; }
+}
