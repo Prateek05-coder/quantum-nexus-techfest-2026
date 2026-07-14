@@ -135,3 +135,17 @@ button { background: none; border: none; color: inherit; font-family: inherit; c
   .portal-stats { gap: 2rem; }
   .stat-number { font-size: 1.5rem; }
 }
+@media (max-width:480px) {
+  .logo-text { font-size: 1.5rem; letter-spacing: 0.3rem; }
+  .hero-subtitle { letter-spacing: 0.25rem; font-size: 0.85rem; }
+  .section-text h2 { font-size: 1.3rem; }
+  .portal-title { font-size: 1.5rem; }
+  .stat-number { font-size: 1.25rem; }
+  .social-links { gap: 1rem; }
+  .scroll-indicator { display: none; }
+  #nav-dots { right: 0.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
