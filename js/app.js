@@ -209,3 +209,42 @@ class PortalEffect {
     this.mesh.geometry.attributes.position.needsUpdate=true;
   }
 }
+
+class AmbientParticles {
+  constructor(scene){ this.scene=scene; this._build(); }
+  _build(){
+    const cnt=CONFIG.particles.ambient;
+    const pos=new Float32Array(cnt*3);
+    for(let i=0;i<cnt;i++){ pos[i*3]=(Math.random()-0.5)*80; pos[i*3+1]=(Math.random()-0.5)*40; pos[i*3+2]=-Math.random()*120; }
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const mat=new THREE.PointsMaterial({size:0.06,color:0xffffff,transparent:true,opacity:0.15,blending:THREE.AdditiveBlending,depthWrite:false});
+    this.scene.add(new THREE.Points(geo,mat));
+  }
+  update(time){}
+}
+
+class CameraController {
+  constructor(camera){
+    this.camera=camera;
+    this._targetPos=new THREE.Vector3();
+    this._targetLook=new THREE.Vector3();
+    this._posSpline=new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0,2,18), new THREE.Vector3(2,1,10), new THREE.Vector3(0,0,0),
+      new THREE.Vector3(-2,0,-20), new THREE.Vector3(0,1,-50), new THREE.Vector3(0,0,-100),
+    ]);
+    this._lookSpline=new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,-10), new THREE.Vector3(0,0,-30),
+      new THREE.Vector3(0,0,-50), new THREE.Vector3(0,0,-80), new THREE.Vector3(0,0,-110),
+    ]);
+  }
+  update(progress,mouse){
+    const t=Math.min(0.999,Math.max(0,progress));
+    this._posSpline.getPoint(t,this._targetPos);
+    this._lookSpline.getPoint(t,this._targetLook);
+    this._targetPos.x+=mouse.smooth.x*0.5;
+    this._targetPos.y+=mouse.smooth.y*0.3;
+    this.camera.position.lerp(this._targetPos,0.05);
+    this.camera.lookAt(this._targetLook);
+  }
+}
