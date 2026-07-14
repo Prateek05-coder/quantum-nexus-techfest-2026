@@ -143,3 +143,30 @@ class WormholeTunnel {
     if(this.particles){ this.particles.material.opacity=v*0.4; const pos=this.particles.geometry.attributes.position.array; for(let i=0;i<pos.length;i+=3){pos[i+2]+=0.3; if(pos[i+2]>5)pos[i+2]=-200;} this.particles.geometry.attributes.position.needsUpdate=true; }
   }
 }
+
+class FloatingObjects {
+  constructor(scene){ this.scene=scene; this.objects=[]; this.core=null; this._build(); }
+  _build(){
+    const geos=[new THREE.IcosahedronGeometry(0.8,1),new THREE.TorusKnotGeometry(0.6,0.2,64,8),new THREE.OctahedronGeometry(0.9),new THREE.TetrahedronGeometry(0.9),new THREE.DodecahedronGeometry(0.7),new THREE.TorusGeometry(0.7,0.25,8,24),new THREE.ConeGeometry(0.6,1.4,6),new THREE.BoxGeometry(1,1,1)];
+    const cols=[CONFIG.colors.cyan,CONFIG.colors.magenta,CONFIG.colors.gold,CONFIG.colors.purple,CONFIG.colors.cyan,CONFIG.colors.magenta,CONFIG.colors.gold,CONFIG.colors.purple];
+    geos.forEach((g,i)=>{
+      const mat=new THREE.MeshStandardMaterial({color:cols[i],emissive:cols[i],emissiveIntensity:0.3,roughness:0.3,metalness:0.8,transparent:true,opacity:0});
+      const mesh=new THREE.Mesh(g,mat);
+      this.objects.push({mesh,orbit:{r:4+Math.random()*3,speed:0.3+Math.random()*0.4,phase:Math.random()*Math.PI*2,y:(Math.random()-0.5)*4}});
+      this.scene.add(mesh);
+    });
+    const coreGeo=new THREE.SphereGeometry(0.4,32,32);
+    const coreMat=new THREE.MeshBasicMaterial({color:CONFIG.colors.white,blending:THREE.AdditiveBlending});
+    this.core=new THREE.Mesh(coreGeo,coreMat);
+    this.core.position.set(0,0,-50); this.scene.add(this.core);
+  }
+  update(time,progress){
+    const v=smoothstep(0.3,0.42,progress)*smoothstep(0.6,0.48,progress);
+    this.objects.forEach(({mesh,orbit})=>{
+      mesh.material.opacity=v;
+      mesh.position.set(Math.cos(time*orbit.speed+orbit.phase)*orbit.r,orbit.y+Math.sin(time*0.5+orbit.phase)*0.8,Math.sin(time*orbit.speed+orbit.phase)*orbit.r-50);
+      mesh.rotation.x+=0.008; mesh.rotation.y+=0.012;
+    });
+    if(this.core){ this.core.material.opacity=v; const s=1+Math.sin(time*2)*0.15; this.core.scale.set(s,s,s); }
+  }
+}
