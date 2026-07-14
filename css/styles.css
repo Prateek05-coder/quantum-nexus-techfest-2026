@@ -27,3 +27,12 @@ button { background: none; border: none; color: inherit; font-family: inherit; c
 .cursor-ring { width: 30px; height: 30px; border: 1.5px solid rgba(0,245,255,0.5); border-radius: 50%; position: absolute; top: -15px; left: -15px; transition: transform 0.15s ease-out, border-color 0.2s ease; }
 #custom-cursor.cursor-hover .cursor-ring { transform: scale(1.6); border-color: var(--magenta); }
 #custom-cursor.cursor-hover .cursor-dot { background: var(--magenta); }
+#loading-screen { position: fixed; inset: 0; z-index: 9999; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; transition: opacity 1s ease, visibility 1s ease; }
+#loading-screen.loaded { opacity: 0; pointer-events: none; visibility: hidden; }
+.loading-content { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+.loading-logo { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+.logo-text { font-family: var(--font-display); font-size: 3rem; font-weight: 900; letter-spacing: 1rem; color: var(--white); }
+.logo-year { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--cyan); letter-spacing: 0.8rem; }
+.loading-bar-container { width: 200px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+#loading-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--magenta)); border-radius: 2px; transition: width 0.3s ease-out; }
+#loading-text { font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 3px; color: var(--white-dim); text-transform: uppercase; animation: pulse 1.5s ease-in-out infinite; }
