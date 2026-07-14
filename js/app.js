@@ -250,8 +250,10 @@ class CameraController {
 }
 
 class TechfestApp {
-  constructor(){
-    this.scrollProgress=0; this.currentSection=0; this.clock=new THREE.Clock();
+  constructor() {
+    this.scrollProgress = 0;
+    this.currentSection = 0;
+    this.clock = new THREE.Clock();
     this.initThree();
     this.initPostProcessing();
     this.initSceneModules();
@@ -260,27 +262,185 @@ class TechfestApp {
     this.initSectionAnimations();
     this.hideLoadingScreen();
     this.animate();
-    window.addEventListener('resize',this._onResize.bind(this));
+    window.addEventListener('resize', this._onResize.bind(this));
   }
-  initThree(){
-    this.scene=new THREE.Scene();
-    this.scene.background=new THREE.Color(CONFIG.colors.background);
-    this.scene.fog=new THREE.FogExp2(CONFIG.colors.background,0.015);
-    this.camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,200);
-    this.camera.position.set(0,0,20);
-    this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
-    this.renderer.setSize(window.innerWidth,window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-    this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure=1.0;
-    const c=document.getElementById('canvas-container');
-    if(c)c.appendChild(this.renderer.domElement);
+
+  initThree() {
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(CONFIG.colors.background);
+    this.scene.fog = new THREE.FogExp2(CONFIG.colors.background, 0.015);
+    this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+    this.camera.position.set(0, 0, 20);
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.0;
+    const container = document.getElementById('canvas-container');
+    if (container) container.appendChild(this.renderer.domElement);
   }
-  initPostProcessing(){
-    this.composer=new EffectComposer(this.renderer);
-    this.composer.addPass(new RenderPass(this.scene,this.camera));
-    const bloom=new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),CONFIG.bloom.strength,CONFIG.bloom.radius,CONFIG.bloom.threshold);
-    this.composer.addPass(bloom); this.bloomPass=bloom;
+
+  initPostProcessing() {
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      CONFIG.bloom.strength, CONFIG.bloom.radius, CONFIG.bloom.threshold
+    );
+    this.composer.addPass(bloomPass);
+    this.bloomPass = bloomPass;
+  }
+
+  initSceneModules() {
+    this.mouseTracker = new MouseTracker();
+    this.cameraController = new CameraController(this.camera);
+    this.galaxy = new GalaxyParticles(this.scene);
+    this.wormhole = new WormholeTunnel(this.scene);
+    this.floatingObjects = new FloatingObjects(this.scene);
+    this.portal = new PortalEffect(this.scene);
+    this.ambientParticles = new AmbientParticles(this.scene);
+  }
+
+  initScrollTrigger() {
+    ScrollTrigger.create({
+      trigger: '#scroll-content',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1,
+      onUpdate: (self) => {
+        this.scrollProgress = self.progress;
+        this._updateCurrentSection(self.progress);
+      },
+    });
+  }
+
+  _updateCurrentSection(progress) {
+    const newSection = Math.min(5, Math.floor(progress * 6));
+    if (newSection !== this.currentSection) {
+      this.currentSection = newSection;
+      document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === newSection);
+      });
+    }
+  }
+
+  initNavigation() {
+    document.querySelectorAll('.nav-dot').forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const index = parseInt(dot.dataset.index, 10);
+        const sections = document.querySelectorAll('.scroll-section');
+        if (sections[index]) sections[index].scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  }
+
+  initSectionAnimations() {
+    // Hero entrance
+    gsap.from('.hero-pre-title', { opacity: 0, y: 30, duration: 1, delay: 0.5 });
+    gsap.from('.hero-title', { opacity: 0, y: 50, scale: 0.9, duration: 1.2, delay: 0.8 });
+    gsap.from('.hero-year', { opacity: 0, y: 30, duration: 1, delay: 1.1 });
+    gsap.from('.hero-subtitle', { opacity: 0, y: 20, duration: 1, delay: 1.3 });
+    gsap.from('.hero-tagline', { opacity: 0, duration: 1, delay: 1.5 });
+    gsap.from('.hero-date', { opacity: 0, y: 20, duration: 1, delay: 1.7 });
+    gsap.from('.scroll-indicator', { opacity: 0, duration: 1, delay: 2 });
+
+    // Hero fade-out
+    gsap.to('.hero-content', {
+      opacity: 0, y: -50,
+      scrollTrigger: { trigger: '#section-hero', start: 'top top', end: '50% top', scrub: true },
+    });
+
+    // Wormhole text
+    gsap.fromTo('.wormhole-text', { opacity: 0, y: 30 }, { opacity: 1, y: 0, scrollTrigger: { trigger: '#section-wormhole', start: 'top center', end: '40% center', scrub: true } });
+    gsap.to('.wormhole-text', { opacity: 0, y: -30, scrollTrigger: { trigger: '#section-wormhole', start: '60% center', end: 'bottom center', scrub: true } });
+
+    // Nexus text
+    gsap.fromTo('.nexus-text', { opacity: 0, y: 30 }, { opacity: 1, y: 0, scrollTrigger: { trigger: '#section-nexus', start: 'top center', end: '40% center', scrub: true } });
+    gsap.to('.nexus-text', { opacity: 0, y: -30, scrollTrigger: { trigger: '#section-nexus', start: '60% center', end: 'bottom center', scrub: true } });
+
+    // Events
+    gsap.from('.events-title', { opacity: 0, y: 40, scrollTrigger: { trigger: '#section-events', start: 'top 70%', end: 'top 30%', scrub: true } });
+    const eventsGridTrigger = document.querySelector('.events-grid') ? '.events-grid' : '#section-events';
+    gsap.from('.event-card', { opacity: 0, y: 60, scale: 0.9, stagger: 0.1, scrollTrigger: { trigger: eventsGridTrigger, start: 'top 80%', end: 'top 30%', scrub: true } });
+
+    // 3D tilt on cards
+    document.querySelectorAll('.event-card').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(1000px) rotateY(${x * 15}deg) rotateX(${-y * 15}deg) translateY(-8px) scale(1.02)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+
+    // Timeline
+    gsap.from('.timeline-title', { opacity: 0, y: 40, scrollTrigger: { trigger: '#section-timeline', start: 'top 70%', end: 'top 40%', scrub: true } });
+    document.querySelectorAll('.timeline-item').forEach((item) => {
+      gsap.fromTo(item, { opacity: 0, y: 40 }, { opacity: 1, y: 0, scrollTrigger: { trigger: item, start: 'top 85%', end: 'top 55%', scrub: true } });
+    });
+
+    // Portal
+    gsap.from('.portal-content', { opacity: 0, y: 60, scale: 0.95, scrollTrigger: { trigger: '#section-portal', start: 'top 70%', end: 'top 30%', scrub: true } });
+
+    // Magnetic register button
+    const regBtn = document.getElementById('register-btn');
+    if (regBtn) {
+      regBtn.addEventListener('mousemove', (e) => {
+        const rect = regBtn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        regBtn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) scale(1.05)`;
+      });
+      regBtn.addEventListener('mouseleave', () => { regBtn.style.transform = ''; });
+    }
+  }
+
+  hideLoadingScreen() {
+    const bar = document.getElementById('loading-bar');
+    const text = document.getElementById('loading-text');
+    const screen = document.getElementById('loading-screen');
+    if (!bar || !text || !screen) return;
+    let progress = 0;
+    const loadInterval = setInterval(() => {
+      progress += Math.random() * 15 + 5;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(loadInterval);
+        bar.style.width = '100%';
+        text.textContent = 'QUANTUM NEXUS ACTIVATED';
+        setTimeout(() => { screen.classList.add('loaded'); }, 500);
+        return;
+      }
+      bar.style.width = progress + '%';
+      text.textContent = `LOADING... ${Math.floor(progress)}%`;
+    }, 200);
+  }
+
+  animate() {
+    requestAnimationFrame(this.animate.bind(this));
+    const time = this.clock.getElapsedTime();
+    this.mouseTracker.update();
+    this.cameraController.update(this.scrollProgress, this.mouseTracker);
+    this.galaxy.update(time, this.scrollProgress);
+    this.wormhole.update(time, this.scrollProgress);
+    this.floatingObjects.update(time, this.scrollProgress);
+    this.portal.update(time, this.scrollProgress);
+    this.ambientParticles.update(time);
+    this.composer.render();
+  }
+
+  _onResize() {
+    const w = window.innerWidth; const h = window.innerHeight;
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(w, h);
+    this.composer.setSize(w, h);
   }
 }
-if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>new TechfestApp());}else{new TechfestApp();}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => new TechfestApp());
+} else {
+  new TechfestApp();
+}
