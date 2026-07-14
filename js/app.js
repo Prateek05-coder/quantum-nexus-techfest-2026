@@ -248,3 +248,39 @@ class CameraController {
     this.camera.lookAt(this._targetLook);
   }
 }
+
+class TechfestApp {
+  constructor(){
+    this.scrollProgress=0; this.currentSection=0; this.clock=new THREE.Clock();
+    this.initThree();
+    this.initPostProcessing();
+    this.initSceneModules();
+    this.initScrollTrigger();
+    this.initNavigation();
+    this.initSectionAnimations();
+    this.hideLoadingScreen();
+    this.animate();
+    window.addEventListener('resize',this._onResize.bind(this));
+  }
+  initThree(){
+    this.scene=new THREE.Scene();
+    this.scene.background=new THREE.Color(CONFIG.colors.background);
+    this.scene.fog=new THREE.FogExp2(CONFIG.colors.background,0.015);
+    this.camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,200);
+    this.camera.position.set(0,0,20);
+    this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
+    this.renderer.setSize(window.innerWidth,window.innerHeight);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure=1.0;
+    const c=document.getElementById('canvas-container');
+    if(c)c.appendChild(this.renderer.domElement);
+  }
+  initPostProcessing(){
+    this.composer=new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.scene,this.camera));
+    const bloom=new UnrealBloomPass(new THREE.Vector2(window.innerWidth,window.innerHeight),CONFIG.bloom.strength,CONFIG.bloom.radius,CONFIG.bloom.threshold);
+    this.composer.addPass(bloom); this.bloomPass=bloom;
+  }
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>new TechfestApp());}else{new TechfestApp();}
