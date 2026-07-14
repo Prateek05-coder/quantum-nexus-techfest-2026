@@ -170,3 +170,42 @@ class FloatingObjects {
     if(this.core){ this.core.material.opacity=v; const s=1+Math.sin(time*2)*0.15; this.core.scale.set(s,s,s); }
   }
 }
+
+class PortalEffect {
+  constructor(scene){ this.scene=scene; this.mesh=null; this._build(); }
+  _build(){
+    const cnt=CONFIG.particles.portal;
+    const pos=new Float32Array(cnt*3); const col=new Float32Array(cnt*3); const phase=new Float32Array(cnt);
+    const c1=new THREE.Color(CONFIG.colors.cyan); const c2=new THREE.Color(CONFIG.colors.magenta); const c3=new THREE.Color(CONFIG.colors.gold);
+    for(let i=0;i<cnt;i++){
+      const angle=Math.random()*Math.PI*2; const r=3+Math.random()*2; const ring=Math.floor(Math.random()*3);
+      pos[i*3]=Math.cos(angle)*r; pos[i*3+1]=(Math.random()-0.5)*0.5+ring*0.3;
+      pos[i*3+2]=Math.sin(angle)*r-100;
+      const t=i/cnt; const c=ring===0?c1.clone():ring===1?c2.clone():c3.clone();
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+      phase[i]=Math.random()*Math.PI*2;
+    }
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+    geo.setAttribute('aPhase',new THREE.BufferAttribute(phase,1));
+    const mat=new THREE.ShaderMaterial({
+      uniforms:{uTime:{value:0},uOpacity:{value:0}},
+      vertexShader:`attribute float aPhase;varying vec3 vColor;uniform float uTime;void main(){vColor=color;float pulse=sin(uTime*2.0+aPhase)*0.4+0.8;vec4 mv=modelViewMatrix*vec4(position,1.0);gl_PointSize=pulse*(400.0/-mv.z);gl_Position=projectionMatrix*mv;}`,
+      fragmentShader:`varying vec3 vColor;uniform float uOpacity;void main(){vec2 c=gl_PointCoord-0.5;if(length(c)>0.5)discard;float a=1.0-smoothstep(0.2,0.5,length(c));gl_FragColor=vec4(vColor,a*uOpacity);}`,
+      vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true
+    });
+    this.mesh=new THREE.Points(geo,mat);
+    this.scene.add(this.mesh);
+  }
+  update(time,progress){
+    if(!this.mesh)return;
+    const v=smoothstep(0.75,0.88,progress);
+    this.mesh.material.uniforms.uTime.value=time;
+    this.mesh.material.uniforms.uOpacity.value=v;
+    this.mesh.rotation.y=time*0.05;
+    const pos=this.mesh.geometry.attributes.position.array;
+    for(let i=0;i<pos.length;i+=3){ const angle=Math.atan2(pos[i+2]+100,pos[i])+0.01; const r=Math.sqrt(pos[i]*pos[i]+(pos[i+2]+100)*(pos[i+2]+100)); pos[i]=Math.cos(angle)*r; pos[i+2]=Math.sin(angle)*r-100; }
+    this.mesh.geometry.attributes.position.needsUpdate=true;
+  }
+}
