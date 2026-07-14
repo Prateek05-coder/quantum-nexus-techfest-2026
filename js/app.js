@@ -72,8 +72,33 @@ class GalaxyParticles {
     geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
     geo.setAttribute('color',new THREE.BufferAttribute(col,3));
     geo.setAttribute('aSize',new THREE.BufferAttribute(sz,1));
-    // Shader material added next commit
-    const mat=new THREE.PointsMaterial({size:0.15,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false});
+        const mat=new THREE.ShaderMaterial({
+      uniforms:{uTime:{value:0},uOpacity:{value:1}},
+      vertexShader:`
+        attribute float aSize;
+        varying vec3 vColor;
+        uniform float uTime;
+        void main(){
+          vColor=color;
+          float twinkle=sin(uTime*2.0+position.x*0.5+position.z*0.3)*0.3+0.7;
+          vec4 mv=modelViewMatrix*vec4(position,1.0);
+          gl_PointSize=aSize*twinkle*(300.0/-mv.z);
+          gl_Position=projectionMatrix*mv;
+        }
+      `,
+      fragmentShader:`
+        varying vec3 vColor;
+        uniform float uOpacity;
+        void main(){
+          vec2 c=gl_PointCoord-0.5;
+          float d=length(c);
+          if(d>0.5)discard;
+          float alpha=1.0-smoothstep(0.2,0.5,d);
+          gl_FragColor=vec4(vColor,alpha*uOpacity);
+        }
+      `,
+      vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true
+    });
     this.mesh=new THREE.Points(geo,mat);
     this.scene.add(this.mesh);
   }
@@ -84,3 +109,4 @@ class GalaxyParticles {
     }
   }
 }
+
