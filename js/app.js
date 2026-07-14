@@ -110,3 +110,36 @@ class GalaxyParticles {
   }
 }
 
+
+class WormholeTunnel {
+  constructor(scene){ this.scene=scene; this.rings=[]; this.particles=null; this._build(); }
+  _build(){
+    const c1=new THREE.Color(CONFIG.colors.cyan); const c2=new THREE.Color(CONFIG.colors.magenta);
+    for(let i=0;i<80;i++){
+      const t=i/79; const z=-i*2.5;
+      const geo=new THREE.TorusGeometry(3+Math.sin(t*Math.PI*3)*0.8,0.04,8,48);
+      const col=c1.clone().lerp(c2,t);
+      const mat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});
+      const ring=new THREE.Mesh(geo,mat);
+      ring.position.z=z; ring.rotation.z=t*Math.PI;
+      this.scene.add(ring); this.rings.push(ring);
+    }
+    const cnt=CONFIG.particles.wormhole;
+    const pos=new Float32Array(cnt*3);
+    for(let i=0;i<cnt;i++){
+      const angle=Math.random()*Math.PI*2;
+      const r=2.5+Math.random()*1.5;
+      pos[i*3]=Math.cos(angle)*r; pos[i*3+1]=Math.sin(angle)*r; pos[i*3+2]=Math.random()*-200;
+    }
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const mat=new THREE.PointsMaterial({size:0.08,color:CONFIG.colors.cyan,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0});
+    this.particles=new THREE.Points(geo,mat);
+    this.scene.add(this.particles);
+  }
+  update(time,progress){
+    const v=smoothstep(0.15,0.25,progress)*smoothstep(0.45,0.35,progress);
+    this.rings.forEach((r,i)=>{ r.material.opacity=v*0.6; r.rotation.z+=0.002*(1+i*0.01); });
+    if(this.particles){ this.particles.material.opacity=v*0.4; const pos=this.particles.geometry.attributes.position.array; for(let i=0;i<pos.length;i+=3){pos[i+2]+=0.3; if(pos[i+2]>5)pos[i+2]=-200;} this.particles.geometry.attributes.position.needsUpdate=true; }
+  }
+}
